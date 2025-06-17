@@ -1,0 +1,36 @@
+{"prompt": "How do airplanes stay in the air?", "type": "question"}
+{"prompt": "What is the capital of Finland?", "type": "question"}
+{"prompt": "why's the ocean salty", "type": "question"}
+{"prompt": "Explain how computers work", "type": "command"}
+{"prompt": "Write a Python function to reverse a string", "type": "command"}
+{"prompt": "The mitochondria is the powerhouse of the cell.", "type": "statement"}
+{"prompt": "Summarize this article for me", "type": "command"}
+{"prompt": "Give an example of Newton's Third Law", "type": "command"}
+{"prompt": "Dogs are great companions", "type": "statement"}
+{"prompt": "What causes rain to fall?", "type": "question"}
+{"prompt": "List 5 benefits of meditation", "type": "command"}
+{"prompt": "Can you explain the Pythagorean Theorem?", "type": "question"}
+{"prompt": "Describe the process of evaporation", "type": "command"}
+{"prompt": "Apples grow on trees", "type": "statement"}
+{"prompt": "Name 3 countries that start with S", "type": "command"}
+{"prompt": "How does memory work in the human brain", "type": "question"}
+{"prompt": "Create a list of the top 10 sci-fi movies", "type": "command"}
+{"prompt": "Humans need sleep to survive", "type": "statement"}
+{"prompt": "Break down the structure of a cell", "type": "command"}
+{"prompt": "Help me understand what inflation is", "type": "question"}
+{"prompt": "Birds have hollow bones", "type": "statement"}
+{"prompt": "Why do cats purr", "type": "question"}
+{"prompt": "Summarize the causes of World War II", "type": "command"}
+{"prompt": "Describe how a bill becomes a law", "type": "command"}
+{"prompt": "I’m curious how deep the ocean gets", "type": "question"}
+{"prompt": "Let’s talk about black holes", "type": "question"}
+{"prompt": "Paint a picture with words about a rainy day", "type": "command"}
+{"prompt": "Fire is hot", "type": "statement"}
+{"prompt": "Suggest three ways to reduce stress", "type": "command"}
+{"prompt": "I wonder what dreams really mean", "type": "statement"}
+{"prompt": "Elephants are the largest land animals", "type": "statement"}
+{"prompt": "Tell me how to cook scrambled eggs", "type": "command"}
+{"prompt": "Please explain blockchain technology", "type": "command"}
+{"prompt": "Why is the sky blue", "type": "question"}
+{"prompt": "Water freezes at 0°C", "type": "statement"}
+{"prompt": "Share some career advice for students", "type": "command"}
