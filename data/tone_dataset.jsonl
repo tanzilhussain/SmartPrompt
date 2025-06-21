@@ -1,0 +1,33 @@
+{"prompt": "hey can u help me out?", "tone": "casual"}
+{"prompt": "lol this is kinda confusing", "tone": "casual"}
+{"prompt": "yo what's the deal with inflation", "tone": "casual"}
+{"prompt": "this is lowkey annoying", "tone": "casual"}
+{"prompt": "umm how does this work", "tone": "casual"}
+{"prompt": "can you explain this pls", "tone": "casual"}
+{"prompt": "could you please explain this concept?", "tone": "polite"}
+{"prompt": "i would appreciate your help with this", "tone": "polite"}
+{"prompt": "thank you for the explanation", "tone": "polite"}
+{"prompt": "would you mind going over this again?", "tone": "polite"}
+{"prompt": "i'd be grateful if you could help me", "tone": "polite"}
+{"prompt": "explain how neural networks work", "tone": "neutral"}
+{"prompt": "define supervised learning", "tone": "neutral"}
+{"prompt": "what is reinforcement learning", "tone": "neutral"}
+{"prompt": "summarize this article", "tone": "neutral"}
+{"prompt": "write a function that sorts a list", "tone": "neutral"}
+{"prompt": "uhh I don't really get this lol", "tone": "casual"}
+{"prompt": "heyy can u just like explain this part?", "tone": "casual"}
+{"prompt": "kinda lost here ngl", "tone": "casual"}
+{"prompt": "wait what does this even mean 😭", "tone": "casual"}
+{"prompt": "lmao okay but why does this matter", "tone": "casual"}
+
+{"prompt": "please help me understand this", "tone": "polite"}
+{"prompt": "would you kindly elaborate on that?", "tone": "polite"}
+{"prompt": "if you don’t mind, could you clarify?", "tone": "polite"}
+{"prompt": "i respectfully disagree, can you explain further?", "tone": "polite"}
+{"prompt": "may I ask for a brief explanation?", "tone": "polite"}
+
+{"prompt": "generate a list of pros and cons", "tone": "neutral"}
+{"prompt": "describe the function of DNA", "tone": "neutral"}
+{"prompt": "write a SQL query to join two tables", "tone": "neutral"}
+{"prompt": "define the concept of entropy", "tone": "neutral"}
+{"prompt": "compare classical and quantum computing", "tone": "neutral"}

@@ -1,7 +1,10 @@
-## analyzes prompt type & tonem loads & uses model
-from joblib import load
+## analyzes prompt type & tone loads & uses model
+import joblib
 
-model = load('models/prompt_type_model.pkl')
+type_model = joblib.load('models/prompt_type_model.pkl')
+tone_model = joblib.load('models/tone_model.pkl')
 def detect_prompt_type(prompt: str) -> str:
-    return model.predict([prompt])[0]
+    return type_model.predict([prompt])[0]
 
+def detect_prompt_tone(prompt: str) -> str:
+    return tone_model.predict([prompt])[0]

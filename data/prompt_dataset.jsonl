@@ -34,3 +34,4 @@
 {"prompt": "Why is the sky blue", "type": "question"}
 {"prompt": "Water freezes at 0°C", "type": "statement"}
 {"prompt": "Share some career advice for students", "type": "command"}
+{"prompt": "The sun is a star", "type": "statement"}

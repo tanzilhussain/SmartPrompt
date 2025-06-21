@@ -1,0 +1,15 @@
+{"Prompt": "hi hello hi", "Tokens": 3, "timestamp": "16-06-2025 18:27:56"}
+{"Prompt": "hi my name is tanzil", "Tokens": 7, "timestamp": "18-06-2025 16:21:05"}
+{"Prompt": "hi there", "Tokens": 2, "timestamp": "19-06-2025 21:20:43"}
+{"Prompt": "hihi", "Tokens": 2, "timestamp": "19-06-2025 21:21:54"}
+{"Prompt": "hi", "Tokens": 1, "timestamp": "19-06-2025 21:25:19"}
+{"Prompt": "hihih", "Tokens": 3, "timestamp": "19-06-2025 21:26:34"}
+{"Prompt": "The mitochondria is the powerhouse of the cell", "Tokens": 9, "timestamp": "19-06-2025 21:27:08"}
+{"prompt": "testing if this works", "tokens": 4, "type": "command", "timestamp": "19-06-2025 21:32:52"}
+{"prompt": "what is climate change", "tokens": 4, "type": "question", "timestamp": "19-06-2025 21:33:17"}
+{"prompt": "explain how to start a podcast", "tokens": 6, "type": "command", "timestamp": "19-06-2025 21:33:45"}
+{"prompt": "the sun is a star", "tokens": 5, "type": "question", "timestamp": "19-06-2025 21:33:58"}
+{"prompt": "hi hi my name os lolol", "tokens": 7, "type": "command", "tone": "casual", "timestamp": "20-06-2025 16:05:43"}
+{"prompt": "hihi byebye", "tokens": 4, "type": "command", "tone": "neutral", "timestamp": "20-06-2025 16:19:01"}
+{"prompt": "i want to go homeeeeee", "tokens": 7, "type": "command", "tone": "neutral", "timestamp": "20-06-2025 16:19:13"}
+{"prompt": "hi there~", "tokens": 3, "type": "command", "tone": "neutral", "timestamp": "21-06-2025 09:15:48"}
