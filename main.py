@@ -3,7 +3,7 @@
 # main class
 from prompt import Prompt
 from logger import log_prompt
-from analyzer import detect_prompt_type, detect_prompt_tone
+from analyzer import detect_prompt_type, detect_prompt_tone, simplify
 
 # ask user for input
 print("Welcome to SmartPrompt!")
@@ -16,6 +16,8 @@ while user_input != 'q':
     prompt_tone = detect_prompt_tone(my_prompt.prompt)
     log_prompt(my_prompt.dict, prompt_type, prompt_tone)
     print("> Prompt logged!")
+    simplified_prompt = simplify(my_prompt.prompt)
+    print(simplified_prompt)
     user_input = input("Input a prompt (or 'q' to quit): ")
 
 

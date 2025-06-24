@@ -13,3 +13,24 @@
 {"prompt": "hihi byebye", "tokens": 4, "type": "command", "tone": "neutral", "timestamp": "20-06-2025 16:19:01"}
 {"prompt": "i want to go homeeeeee", "tokens": 7, "type": "command", "tone": "neutral", "timestamp": "20-06-2025 16:19:13"}
 {"prompt": "hi there~", "tokens": 3, "type": "command", "tone": "neutral", "timestamp": "21-06-2025 09:15:48"}
+{"prompt": "hi there hello", "tokens": 3, "type": "command", "tone": "neutral", "timestamp": "21-06-2025 16:54:35"}
+{"prompt": "helpp my", "tokens": 3, "type": "command", "tone": "neutral", "timestamp": "21-06-2025 16:54:54"}
+{"prompt": "hellooooo", "tokens": 2, "type": "command", "tone": "neutral", "timestamp": "21-06-2025 16:55:10"}
+{"prompt": "hi pls help", "tokens": 3, "type": "command", "tone": "casual", "timestamp": "21-06-2025 16:55:16"}
+{"prompt": "hello pls help", "tokens": 3, "type": "command", "tone": "casual", "timestamp": "21-06-2025 16:59:07"}
+{"prompt": "hey there", "tokens": 2, "type": "command", "tone": "casual", "timestamp": "21-06-2025 16:59:32"}
+{"prompt": "hey", "tokens": 1, "type": "command", "tone": "casual", "timestamp": "21-06-2025 17:00:42"}
+{"prompt": "hey", "tokens": 1, "type": "command", "tone": "casual", "timestamp": "21-06-2025 17:06:29"}
+{"prompt": "hello hey", "tokens": 2, "type": "command", "tone": "casual", "timestamp": "21-06-2025 17:07:00"}
+{"prompt": "hey there pls help me i dont understand the state of the economy", "tokens": 13, "type": "command", "tone": "casual", "timestamp": "21-06-2025 22:19:52"}
+{"prompt": "hey there  help me i dont understand the state of the economy", "tokens": 13, "type": "command", "tone": "neutral", "timestamp": "21-06-2025 22:21:11"}
+{"prompt": "well like help me pls", "tokens": 5, "type": "command", "tone": "casual", "timestamp": "21-06-2025 22:24:48"}
+{"prompt": "well help me pls", "tokens": 4, "type": "command", "tone": "casual", "timestamp": "21-06-2025 22:25:10"}
+{"prompt": "hey there help me pls", "tokens": 5, "type": "command", "tone": "casual", "timestamp": "22-06-2025 10:26:52"}
+{"prompt": "hey there help me pls", "tokens": 5, "type": "command", "tone": "casual", "timestamp": "22-06-2025 10:27:25"}
+{"prompt": "hey there help me pls", "tokens": 5, "type": "command", "tone": "casual", "timestamp": "22-06-2025 10:28:37"}
+{"prompt": "hey there help me pls", "tokens": 5, "type": "command", "tone": "casual", "timestamp": "22-06-2025 10:51:55"}
+{"prompt": "hey there help me pls", "tokens": 5, "type": "command", "tone": "casual", "timestamp": "22-06-2025 10:52:55"}
+{"prompt": "can you help me just like with this one task pls ", "tokens": 12, "type": "command", "tone": "casual", "timestamp": "23-06-2025 10:25:06"}
+{"prompt": "hey there help me pls", "tokens": 5, "type": "command", "tone": "casual", "timestamp": "23-06-2025 15:51:50"}
+{"prompt": "hey there help me pls", "tokens": 5, "type": "command", "tone": "casual", "timestamp": "23-06-2025 15:52:28"}
