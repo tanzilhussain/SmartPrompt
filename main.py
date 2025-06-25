@@ -3,21 +3,25 @@
 # main class
 from prompt import Prompt
 from logger import log_prompt
-from analyzer import detect_prompt_type, detect_prompt_tone, simplify
+from analyzer import detect_prompt_type, detect_prompt_tone, simplify, analyze_prompt_verbosity
 
-# ask user for input
+# ask user for input -> take in input, analyze prompt & provide feedback -> ask user if they want smartprompt to simplify the prompt -> simplify prompt (ideally in extension prompt would be simplified prior to sending)
 print("Welcome to SmartPrompt!")
 user_input = input("Input a prompt (or 'q' to quit): ")
 while user_input != 'q':
     my_prompt = Prompt(user_input)
-    # print result
-    print("> Token Count: " + str(my_prompt.token_count))
     prompt_type = detect_prompt_type(my_prompt.prompt)
     prompt_tone = detect_prompt_tone(my_prompt.prompt)
+    verbosity_dict = analyze_prompt_verbosity(my_prompt.prompt)
+    print("Prompt Type: " + prompt_type + "\nPrompt Tone: " + prompt_tone + "\n")
+    if verbosity_dict["verbosity level"] == "medium" or verbosity_dict["verbosity level"] == "high":
+        simplify_input = input("Would you like SmartPrompt to rewrite this prompt for you? (y/n) ")
+        if simplify_input == "y":
+            simplified_prompt = simplify(my_prompt.prompt)
+            print(simplified_prompt)
     log_prompt(my_prompt.dict, prompt_type, prompt_tone)
     print("> Prompt logged!")
-    simplified_prompt = simplify(my_prompt.prompt)
-    print(simplified_prompt)
+
     user_input = input("Input a prompt (or 'q' to quit): ")
 
 

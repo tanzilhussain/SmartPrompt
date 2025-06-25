@@ -17,23 +17,24 @@ filler_words = [
     "umm", "uh", "you know", "like", "i mean", "well", "sooo", "okay so", "pls", "please", "can you", "could you", "would you", 
     "i’d be grateful if you could", "i was wondering if", "it would be great if", "would it be possible to", "do you mind", "super", "really", "very", "totally", "absolutely"
 ]
+vague_words = {
+    "do": ["complete","summarize", "execute"],
+    "get": ["find", "retrieve", "identify"],
+    "make": ["create", "build", "construct"],
+    "go over": ["review", "analyze"],
+    "deal with": ["resolve", "handle", "manage"],
+    "talk about": ["explain", "discuss", "outline"],
+    "stuff": ["concepts", "data", "project", "topic"],
+    "things": ["ideas", "features", "details"]
+}
 
-def simplify(user_input):
-    new_prompt = str(user_input).lower()
-    filler_word_count = 0
-    for word in filler_words:
-        if new_prompt.find(word) != -1:
-            filler_word_count += 1
-            new_prompt = re.sub(word, "", new_prompt)
-    new_prompt = re.sub("  ", " ", new_prompt)
-    print(filler_word_count)
-    return new_prompt
 
 def analyze_prompt_verbosity(prompt: str) -> dict:
     word_list = prompt.split()
     word_count = len(word_list)
     total_letters = 0
     filler_word_count = 0
+    repeat_count = 0
     verbosity_level = ""
     for w in word_list:
         total_letters += len(w)
@@ -60,4 +61,20 @@ def analyze_prompt_verbosity(prompt: str) -> dict:
     else:
         verbosity_level = "low"
 
-    return {"word count": word_count, "average word length": avg_word_len, "repetition ratio" : repetition_ratio, "filler word density": verbosity_level}
+    return {"word count": word_count, "average word length": avg_word_len, "repetition ratio" : repetition_ratio, "filler word density": filler_word_density, "verbosity level": verbosity_level}
+
+
+def simplify(user_input):
+    new_prompt = str(user_input).lower()
+    filler_word_count = 0
+    for word in filler_words:
+        if new_prompt.find(word) != -1:
+            filler_word_count += 1
+            new_prompt = re.sub(word, "", new_prompt)
+    new_prompt = re.sub("  ", " ", new_prompt)
+    print(filler_word_count)
+    for word in vague_words:
+        if new_prompt.find(word) != 1:
+            re.sub(word, vague_words[word][0], new_prompt)
+
+    return new_prompt

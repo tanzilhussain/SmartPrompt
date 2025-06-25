@@ -8,7 +8,7 @@ def log_prompt(data: dict, prompt_type, prompt_tone, file_path: str = './prompt_
     now = datetime.datetime.now()
     timestamp = now.strftime("%d-%m-%Y %H:%M:%S")
     data['timestamp'] = timestamp
-
+    # add simplified prompt to prompt log
     with open(file_path,'a') as f:
         json.dump(data, f)
         f.write('\n')
