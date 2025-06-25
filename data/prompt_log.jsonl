@@ -35,3 +35,8 @@
 {"prompt": "hey there help me pls", "tokens": 5, "type": "command", "tone": "casual", "timestamp": "23-06-2025 15:51:50"}
 {"prompt": "hey there help me pls", "tokens": 5, "type": "command", "tone": "casual", "timestamp": "23-06-2025 15:52:28"}
 {"prompt": "hey could you maybe help me with this project", "tokens": 9, "type": "command", "tone": "polite", "timestamp": "24-06-2025 18:20:37"}
+{"prompt": "hey could you maybe help me with this project", "tokens": 9, "type": "command", "tone": "polite", "timestamp": "24-06-2025 18:28:51"}
+{"prompt": "hey could you maybe help me with this project", "tokens": 9, "type": "command", "tone": "polite", "timestamp": "24-06-2025 18:30:12"}
+{"prompt": "hey could you maybe help me with this project", "tokens": 9, "type": "command", "tone": "polite", "timestamp": "24-06-2025 18:35:02"}
+{"prompt": "hey could you maybe help me with this project lol", "tokens": 10, "type": "command", "tone": "polite", "timestamp": "24-06-2025 18:49:30", "word count": 10, "average word length": 4.0, "repetition ratio": 0.0, "filler word density": 0.2, "verbosity level": "low"}
+{"prompt": "hey there hey can you help me thaanks", "tokens": 9, "type": "question", "tone": "casual", "timestamp": "24-06-2025 18:58:30", "word count": 8, "average word length": 3.75, "repetition ratio": 0.125, "filler word density": 0.0, "verbosity level": "low"}

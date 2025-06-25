@@ -71,10 +71,8 @@ def simplify(user_input):
         if new_prompt.find(word) != -1:
             filler_word_count += 1
             new_prompt = re.sub(word, "", new_prompt)
-    new_prompt = re.sub("  ", " ", new_prompt)
-    print(filler_word_count)
     for word in vague_words:
-        if new_prompt.find(word) != 1:
+        if new_prompt.find(word) != -1:
             re.sub(word, vague_words[word][0], new_prompt)
-
+    new_prompt = re.sub("  ", " ", new_prompt)
     return new_prompt
