@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body {
+                height: 200px;
+                width: 300px;
+                padding: 20px;
+                font-family: 'Arial Narrow Bold';
+            }
+        </style>
+        <body>
+        <p style="font-size: 24px;"><strong>Prompt:</strong></p>
+        <div id="prompt-text" style="background:#f4f4f4; padding:8px; border-radius:6px; margin-bottom:10px;"></div>
+        <div id="stats-section">
+            <p><strong>Stats:</strong></p>
+            <ul id="stats-list" style="list-style-type:none; padding-left:0;">
+                <!-- <li style="color:darkblue;">Token count: <span id="token-count"></span></li> -->
+                <li style="color:darkblue;">Prompt Type: <span id="prompt-type"></span></li>
+                <li style="color:darkblue;">Tone: <span id="tone"></span></li>
+                <li style="color:darkblue;">Verbosity: <span id="verbosity"></span></li>
+                <!-- <div id="feedback-section" style="margin-top:10px;">
+                <p><strong> Feedback:</strong></p>
+                <ul id="feedback-list" style="list-style-type:disc; padding-left:20px;"></ul>
+                </div> -->
+            </ul>
+        </div>
+        <script src="popup.js"> </script>
+        </body>
+    </head>
+</html>
+

@@ -1,0 +1,1 @@
+# function to process the core funcs
