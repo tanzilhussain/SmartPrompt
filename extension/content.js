@@ -16,9 +16,9 @@ window.addEventListener("load", () => {
 
         if (!userTurn) return;
 
-        const promptText = userTurn.innerText.trim();
-        if (!promptText) return;
-
+        userInput = userTurn.innerText.trim();
+        if (!userInput) return;
+        let promptText = userInput.replace(/^You said:\s*/, "");
         console.log("Captured prompt:", promptText);
 
         chrome.runtime.sendMessage(

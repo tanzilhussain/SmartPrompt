@@ -30,6 +30,8 @@ vague_words = {
 
 
 def analyze_prompt_verbosity(prompt: str) -> dict:
+    if prompt.find("you said:\\n") != 1:
+        prompt.strip("you said:\\n")
     word_list = prompt.split()
     word_count = len(word_list)
     total_letters = 0
@@ -50,7 +52,7 @@ def analyze_prompt_verbosity(prompt: str) -> dict:
 
     # calculating avg word length, repetition ratio, filler word density
     if word_count != 0:
-        avg_word_len = (total_letters/word_count)
+        avg_word_len = round(total_letters/word_count)
         repetition_ratio = (repeat_count/word_count)
         filler_word_density = (filler_word_count/word_count)
     

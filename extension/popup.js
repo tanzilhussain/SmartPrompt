@@ -18,10 +18,11 @@ chrome.storage.onChanged.addListener(function (changes, area) {
 });
 
 function updatePopup(data) {
-    document.getElementById("token-count").textContent = data.tokens;
-    document.getElementById("prompt-type").textContent = data.type;
+    document.getElementById("original_prompt").textContent = data.originalPrompt;
+    document.getElementById("token_count").textContent = data.tokenCount;
+    document.getElementById("prompt_type").textContent = data.type;
     document.getElementById("tone").textContent = data.tone;
-    document.getElementById("verbosity").textContent = data["verbosity level"];
+    document.getElementById("verbosity").textContent = data.verbosity;
 }
 
 
