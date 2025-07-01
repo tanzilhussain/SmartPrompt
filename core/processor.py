@@ -8,7 +8,6 @@ def process_prompt(user_prompt: str) -> dict:
     tone = detect_prompt_tone(my_prompt.prompt)
     type = detect_prompt_type(my_prompt.prompt)
     verbosity_stats = analyze_prompt_verbosity(my_prompt.prompt)
-    simplified_prompt = simplify(my_prompt.prompt)
     log_prompt(my_prompt.dict, type, tone, verbosity_stats)
 
     return {
@@ -20,6 +19,5 @@ def process_prompt(user_prompt: str) -> dict:
         "tone": tone,
         "repetition ratio" : verbosity_stats["repetition ratio"], 
         "filler word density": verbosity_stats["filler word density"], 
-        "verbosity": verbosity_stats["verbosity level"],
-        "simplified_prompt": simplified_prompt
+        "verbosity": verbosity_stats["verbosity level"]
     }

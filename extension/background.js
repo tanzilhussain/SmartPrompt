@@ -1,4 +1,20 @@
 console.log("bg script loaded")
+function saveLastPrompt(result) {
+  const record = {
+    originalPrompt      : result.prompt,
+    tokenCount          : result["token count"],
+    wordCount           : result["word count"],
+    averageWordLength   : result["average word length"],
+    type                : result.type,
+    tone                : result.tone,
+    repetitionRatio     : result["repetition ratio"],
+    fillerWordDensity   : result["filler word density"],
+    verbosity           : result.verbosity,
+  };
+  return new Promise(res =>
+    chrome.storage.local.set({ lastPrompt: record }, () => res(record))
+  );
+}
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "analyze") {
     // send to fastAPI backend
@@ -9,30 +25,31 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       }, 
       body: JSON.stringify({prompt: request.prompt})
     })
-    .then(response => response.json())
-    .then (data => {
-      console.log("Backend response: ", data);
-      chrome.storage.local.set({
-      lastPrompt: {
-      originalPrompt: data["original prompt"],
-      tokenCount: data["token count"],
-      wordCount: data["word count"],
-      average_word_length: data["average word length"],
-      type: data.type,
-      tone: data.tone,
-      repetition_ratio: data["repetition ratio"],
-      filler_word_density: data["filler word density"],
-      verbosity: data.verbosity,
-      simplified_prompt: data.simplified_prompt           
-      }
-    }, () => {
-      console.log("Prompt stored in chrome.storage");
-      sendResponse({success: true});
-    });
+    .then(r => r.json())
+    .then(saveLastPrompt)                   
+    .then(stored => {
+      /* broadcast so popup can refresh immediately */
+      chrome.runtime.sendMessage({ action:"prompt_analyzed", data: stored });
+      sendResponse({ success:true, data: stored });
     })
-    .catch(error => {
-      console.error("Error calling backend: ", error);
-      sendResponse({ success: false, error});
+    .catch(err => {
+      console.error("Analyze error:", err);
+      sendResponse({ success:false, error:String(err) });
+    });
+    return true;       
+  }
+  if (request.action === "simplify") {
+    fetch("http://127.0.0.1:8000/simplify", {
+      method  : "POST",
+      headers : { "Content-Type":"application/json" },
+      body    : JSON.stringify({ prompt: request.prompt })
+    })
+    .then(r => r.json())
+    .then(({ simplified_prompt }) => {
+      sendResponse({ success:true, simplified:simplified_prompt });
+    })
+    .catch(err => {
+      sendResponse({ success:false, error:String(err) });
     });
     return true;
   }

@@ -1,32 +1,85 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <style>
-            body {
-                height: 200px;
-                width: 300px;
-                padding: 20px;
-                font-family: 'Arial Narrow Bold';
-            }
-        </style>
-        <body>
-        <p style="font-size: 24px;"><strong>Prompt:</strong></p>
-        <div id="original_prompt" style="background:#f4f4f4; padding:8px; border-radius:6px; margin-bottom:10px;"></div>
-        <div id="stats-section">
-            <p><strong>Stats:</strong></p>
-            <ul id="stats-list" style="list-style-type:none; padding-left:0;">
-                <li style="color:darkblue;">Token count: <span id="token_count"></span></li>
-                <li style="color:darkblue;">Prompt Type: <span id="prompt_type"></span></li>
-                <li style="color:darkblue;">Tone: <span id="tone"></span></li>
-                <li style="color:darkblue;">Verbosity: <span id="verbosity"></span></li>
-                <!-- <div id="feedback-section" style="margin-top:10px;">
-                <p><strong> Feedback:</strong></p>
-                <ul id="feedback-list" style="list-style-type:disc; padding-left:20px;"></ul>
-                </div> -->
-            </ul>
-        </div>
-        <script src="popup.js"> </script>
-        </body>
-    </head>
-</html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmartPrompt Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="chart.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>SmartPrompt Dashboard 🧠</h1>
+    </header>
 
+    <!-- Tabs -->
+    <div class="action-buttons">
+      <button id="historyBtn" class="action-btn">
+        <span class="btn-text">Prompt History</span>
+        <span class="btn-icon">🕘</span>
+      </button>
+      <button id="statsBtn" class="action-btn active">
+        <span class="btn-text">My Prompt Stats</span>
+        <span class="btn-icon">📊</span>
+      </button>
+      <button id="simplifyBtn" class="action-btn">
+        <span class="btn-text">Simplify Prompt</span>
+        <span class="btn-icon">⚡</span>
+      </button>
+    </div>
+
+    <!-- Stats View -->
+    <div id="stats-view" class="active">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>Average Prompt Length</h3>
+          <div id="avgLength" class="big-number"><span class="number">—</span><span class="unit">words</span></div>
+        </div>
+        <div class="stat-card">
+          <h3>Common Topics</h3>
+          <ul id="topicList" class="topic-list"></ul>
+        </div>
+        <div class="stat-card">
+          <h3>Prompt Types</h3>
+          <canvas id="promptTypesChart" width="120" height="120"></canvas>
+        </div>
+        <div class="stat-card">
+          <h3>Repetition Ratio</h3>
+          <canvas id="repetitionChart" width="120" height="120"></canvas>
+        </div>
+        <div class="stat-card">
+          <h3>Filler Word Density</h3>
+          <canvas id="fillerChart" width="120" height="120"></canvas>
+        </div>
+        <div class="stat-card">
+          <h3>Verbosity Levels</h3>
+          <canvas id="verbosityChart" width="120" height="120"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- History View -->
+    <div id="history-view">
+      <h2 style="font-size: 16px; margin-bottom: 8px;">Prompt History</h2>
+      <ul id="historyList" style="list-style: disc inside; font-size: 13px; color: #444;"></ul>
+    </div>
+
+    <!-- Simplify View -->
+    <div id="simplify-view">
+      <h2 style="font-size: 16px; margin-bottom: 8px;">Simplify your prompt</h2>
+      <textarea id="promptInput" placeholder="Enter your prompt here..." style="width: 100%; min-height: 60px; margin-bottom: 10px;"></textarea>
+      <button id="simplifyActionBtn" style="width: 100%; background: #6366f1; color: white; border: none; border-radius: 6px; padding: 8px 0; font-size: 15px; cursor: pointer;">Click to Simplify!</button>
+      <div id="simplifiedOutput" style="margin-top: 14px; background: #f8f9fa; border-radius: 6px; padding: 10px; min-height: 30px; font-size: 15px"></div>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading" id="loading" style="display: none;">
+      <div class="spinner"></div>
+      <p>Analyzing your prompts...</p>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
