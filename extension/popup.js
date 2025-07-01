@@ -380,6 +380,14 @@ class SmartPromptPopup {
       console.error("Error saving data:", error)
     }
   }
+  
+  copyToClipboard() {
+    var copyText = document.getElementById("simplifiedOutput");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); 
+    navigator.clipboard.writeText(copyText.value);
+    alert("Copied the text: " + copyText.value);
+  }
 }
 
 document.addEventListener("DOMContentLoaded", async() => {
