@@ -46,11 +46,28 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     })
     .then(r => r.json())
     .then(({ simplified_prompt }) => {
-      sendResponse({ success:true, simplified:simplified_prompt });
+      sendResponse({ success:true, simplified: simplified_prompt });
     })
     .catch(err => {
       sendResponse({ success:false, error:String(err) });
     });
     return true;
   }
+  if (request.action === "get_history") {
+    console.log("Received request to fetch history...");
+    fetch("http://127.0.0.1:8000/log")
+      .then(res => {
+        console.log("Backend responded:", res.status);
+        return res.json();
+      })
+      .then(data => {
+        console.log("Fetched history:", data);
+        sendResponse({ rows: data });
+      })
+      .catch(err => {
+        console.error("Error fetching prompt history:", err);
+        sendResponse({ rows: [] });
+      });
+    return true;     
+    }
 });

@@ -6,6 +6,7 @@ window.addEventListener("load", () => {
         if (turns.length === 0) return;
 
         let userTurn;
+        let lastSentPrompt = null;
         // user prompt
         if (turns.length === 1) {
           userTurn = turns[0];
@@ -20,16 +21,26 @@ window.addEventListener("load", () => {
         if (!userInput) return;
         let promptText = userInput.replace(/^You said:\s*/, "");
         console.log("Captured prompt:", promptText);
+        if (chrome.runtime && chrome.runtime.id) {
+          if (promptText === lastSentPrompt) return; // skip duplicate
+          lastSentPrompt = promptText;
+          chrome.runtime.sendMessage(
+            {
+              action: "analyze",
+              prompt: promptText
+            },
+            () => {
+              if (chrome.runtime.lastError) {
+                console.error("Message send error:", chrome.runtime.lastError.message);
+              } else {
+                console.log("Sent prompt to background.js");
+              }
+            }
+          );
+        } else {
+          console.warn("Extension context is invalidated – cannot send message");
+        }
 
-        chrome.runtime.sendMessage(
-          {
-            action: "analyze",
-            prompt: promptText
-          },
-          () => {
-            console.log("Sent prompt to background.js");
-          }
-        );
       }
     }
   });

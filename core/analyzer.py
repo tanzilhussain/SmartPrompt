@@ -3,6 +3,8 @@ import joblib
 import re, os, httpx
 from collections import Counter
 from dotenv import load_dotenv
+import tiktoken
+import asyncio
 
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
@@ -57,8 +59,8 @@ def analyze_prompt_verbosity(prompt: str) -> dict:
     # calculating avg word length, repetition ratio, filler word density
     if word_count != 0:
         avg_word_len = round(total_letters/word_count)
-        repetition_ratio = (repeat_count/word_count)
-        filler_word_density = (filler_word_count/word_count)
+        repetition_ratio = round(repeat_count/word_count, 2)
+        filler_word_density = round(filler_word_count/word_count, 2)
     
     if filler_word_density >= 0.66 or repetition_ratio >= 0.66:
         verbosity_level = "high"
@@ -70,9 +72,11 @@ def analyze_prompt_verbosity(prompt: str) -> dict:
     return {"word count": word_count, "average word length": avg_word_len, "repetition ratio" : repetition_ratio, "filler word density": filler_word_density, "verbosity level": verbosity_level}
 
 
-async def simplify(user_input):
+async def simplify(user_input: str):
     # rule based clean
     new_prompt = str(user_input).lower()
+    encoding = tiktoken.get_encoding("cl100k_base")
+    token_count = len(encoding.encode(new_prompt))
     filler_word_count = 0
     for word in filler_words:
         if new_prompt.find(word) != -1:
@@ -84,35 +88,36 @@ async def simplify(user_input):
     new_prompt = re.sub("  ", " ", new_prompt)
 
     # gemini clean
-    verbosity_dict = analyze_prompt_verbosity(new_prompt)
-    while new_prompt.strip().lower() == user_input.strip().lower() or verbosity_dict["verbosity level"] == "high":
-        headers = {
-            "Content-Type": "application/json",
-            "x-goog-api-key": GEMINI_API_KEY,
-        }
-        body = {
-            "contents": [
-                {"parts": [
-                    {"text": "Simplify this prompt to be clearer and more concise: " + new_prompt}
-                ]}
-            ]
-        }
-        try: 
-            async with httpx.AsyncClient() as client:
-                response = await client.post(
-                    "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",
-                    headers=headers,
-                    json=body
-                )
-            response.raise_for_status()
-            output = response.json()
-            new_prompt = output["candidates"][0]["content"]["parts"][0]["text"].strip()
-            verbosity_dict = analyze_prompt_verbosity(new_prompt)
-            return new_prompt
-        except Exception as e:
-            print("Gemini error", e)
-            verbosity_dict = analyze_prompt_verbosity(new_prompt)
-            return new_prompt
+    if token_count > 25:
+        verbosity_dict = analyze_prompt_verbosity(new_prompt)
+        while new_prompt.prompt.strip().lower() == user_input.strip().lower() or verbosity_dict["verbosity level"] == "high":
+            headers = {
+                "Content-Type": "application/json",
+                "x-goog-api-key": GEMINI_API_KEY,
+            }
+            body = {
+                "contents": [
+                    {"parts": [
+                        {"text": "Simplify this prompt to be clearer and more concise: " + new_prompt}
+                    ]}
+                ]
+            }
+            try: 
+                async with httpx.AsyncClient() as client:
+                    response = await client.post(
+                        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",
+                        headers=headers,
+                        json=body
+                    )
+                response.raise_for_status()
+                output = response.json()
+                new_prompt = output["candidates"][0]["content"]["parts"][0]["text"].strip()
+                verbosity_dict = analyze_prompt_verbosity(new_prompt)
+                return new_prompt
+            except Exception as e:
+                print("Gemini error", e)
+                verbosity_dict = analyze_prompt_verbosity(new_prompt)
+                return new_prompt
     return new_prompt
         
 # import asyncio

@@ -14,17 +14,34 @@ html, body {
   margin: 0;
   padding: 0;
 }
-/* --- FINAL visibility rules (override everything above) --- */
+
 #stats-view,
 #history-view,
 #simplify-view {
-  display: none !important;          /* hidden by default */
+  display: none !important;          
 }
 
 #stats-view.active,
 #history-view.active,
 #simplify-view.active {
-  display: block !important;         /* only active shows */
+  display: block !important;        
+}
+#historyList details {
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px;
+  background: #f9f9f9;
+}
+
+#historyList summary {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#historyList ul {
+  padding-left: 20px;
+  margin-top: 5px;
 }
 
 
@@ -88,7 +105,7 @@ html, body {
   box-shadow: 0 1px 4px rgba(0,0,0,0.04);
 }
 .action-buttons .action-btn.active {
-  background: #f00000;     /* your chosen highlight color */
+  background: #10b981;;     
   border-color: #6366f1;
   color: white;
 }
@@ -100,7 +117,7 @@ html, body {
 }
 
 .action-btn.active {
-  background: #ff0066;
+  background: #10b981;
   color: white;
   border-color: #6366f1;
 }

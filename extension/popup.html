@@ -41,8 +41,8 @@
           <ul id="topicList" class="topic-list"></ul>
         </div>
         <div class="stat-card">
-          <h3>Prompt Types</h3>
-          <canvas id="promptTypesChart" width="120" height="120"></canvas>
+          <h3>Prompt Tones</h3>
+          <canvas id="promptTonesChart" width="120" height="120"></canvas>
         </div>
         <div class="stat-card">
           <h3>Repetition Ratio</h3>
@@ -67,11 +67,11 @@
 
     <!-- Simplify View -->
     <div id="simplify-view">
-      <h2 style="font-size: 16px; margin-bottom: 8px;">Simplify your prompt</h2>
+      <h2 style="font-size: 16px; margin-bottom: 8px;">Simplify your prompt:</h2>
       <textarea id="promptInput" placeholder="Enter your prompt here..." style="width: 100%; min-height: 60px; margin-bottom: 10px;"></textarea>
       <button id="simplifyActionBtn" style="width: 100%; background: #6366f1; color: white; border: none; border-radius: 6px; padding: 8px 0; font-size: 15px; cursor: pointer;">Click to Simplify!</button>
       <div id="simplifiedOutput" type="text" style="margin-top: 14px; background: #f8f9fa; border-radius: 6px; padding: 10px; min-height: 30px; font-size: 15px"></div>
-      <button onclick="copyToClipboard()">Copy text</button>
+      <button id="copyBtn" style="width: 100%; display: none; margin-top: 8px; background: #10b981; color: white; border: none; border-radius: 6px; padding: 6px 12px; font-size: 14px; cursor: pointer;">Copy Text</button>
     </div>
 
     <!-- Loading -->

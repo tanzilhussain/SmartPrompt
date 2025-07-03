@@ -7,76 +7,111 @@ class SmartPromptPopup {
   }
 
   async init() {
-    await this.loadPromptHistoryFromServer();
-    this.bindEvents();
-    this.toggleViews(); 
-    this.loadStoredData()
-    // this.bindEvents()
-    this.renderCharts()
+    this.bindEvents()
+    this.toggleViews()
+    const { rows = [] } = await this.bgRequest({ action: "get_history", limit: 100 });
+    this.promptHistory = rows;
+    this.computePromptData();
     this.updateStats()
-  }
-    // 1️⃣ Fetch the full prompt_log.jsonl from your backend
-  async loadPromptHistoryFromServer() {
-    try {
-      const res = await fetch("http://127.0.0.1:8000/log");
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      this.promptHistory = await res.json();
-
-      // 2️⃣ Recompute your aggregated promptData
-      this.computePromptData();
-
-    } catch (err) {
-      console.error("Failed to fetch prompt history:", err);
-      // Fallback to empty history
-      this.promptHistory = [];
-      this.promptData = this.getEmptyPromptData();
-    }
+    this.renderCharts()
+    document.getElementById("copyBtn").addEventListener("click", () => {
+      const text = document.getElementById("simplifiedOutput").textContent;
+      navigator.clipboard.writeText(text).catch((err) => {
+        alert("Failed to copy");
+        console.error(err);
+      });
+    });
   }
 
-  // 3️⃣ Build promptData summary from this.promptHistory
-  computePromptData() {
+    // build promptData summary from this.promptHistory
+    computePromptData() {
     const logs = this.promptHistory;
 
-    // helper functions (you can move these outside the class)
-    const average = arr => arr.reduce((a,b)=>a+b,0)/ (arr.length||1);
-    const countBy = (arr, key) => arr.reduce((acc,i)=>{
-      const v = i[key]; acc[v]=(acc[v]||0)+1; return acc;
-    }, {});
-    const extractTopics = (logs) => {
-      const freq = {};
-      logs.forEach(l => {
-        (l.prompt||"").toLowerCase().split(/\W+/)
-         .filter(w=>w.length>3)
-         .forEach(w=>freq[w]=(freq[w]||0)+1);
-      });
-      return Object.entries(freq)
-        .sort((a,b)=>b[1]-a[1])
-        .slice(0,5)
-        .map(e=>e[0]);
+    const average = arr => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
+
+    const countBy = (arr, key) => {
+      return arr.reduce((acc, item) => {
+        const value = item[key];
+        acc[value] = (acc[value] || 0) + 1;
+        return acc;
+      }, {});
     };
 
-    this.promptData = {
-      totalPrompts:       logs.length,
-      avgLength:          Math.round(average(logs.map(l=>l.word_count))),
-      commonTopics:       extractTopics(logs),
-      promptTypes:        countBy(logs, "type"),
-      repetitionData:     logs.map(l=>l.repetition_ratio),
-      fillerData:         logs.map(l=>l.filler_word_density),
-      verbosityData:      countBy(logs, "verbosity"),
+    const extractTopics = logs => {
+      const freq = {};
+      logs.forEach(log => {
+        const prompt = log["original prompt"] || log.prompt || "";
+        prompt.toLowerCase().split(/\W+/)
+          .filter(word => word.length > 3)
+          .forEach(word => {
+            freq[word] = (freq[word] || 0) + 1;
+          });
+      });
+
+      return Object.entries(freq)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5)
+        .map(([word, _count]) => word);
     };
+    
+    const rawVerbosityCounts = countBy(logs, "verbosity");
+    this.promptData = {
+      totalPrompts: logs.length,
+      avgLength: Math.round(average(logs.map(l => l["word count"]))),
+      commonTopics: extractTopics(logs),
+      promptTones: countBy(logs, "tone") || {},
+      repetitionData: logs.map(l => l["repetition ratio"] || 0),
+      fillerData: logs.map(l => l["filler word density"] || 0),
+      verbosityData: {
+        high: rawVerbosityCounts.high || 0,
+        medium: rawVerbosityCounts.medium || 0,
+        low: rawVerbosityCounts.low || 0,
+      }
+    };
+
+  }
+  
+  groupPromptsByDate(logs) {
+    return logs.reduce((acc, log) => {
+      const date = log.timestamp?.split(" ")[0] || "Unknown";
+      if (!acc[date]) acc[date] = [];
+      acc[date].push(log);
+      return acc;
+    }, {});
   }
 
-  // 4️⃣ Populate the History tab
+
+
+  // populate the history tab
   loadPromptHistoryView() {
-    const ul = document.getElementById("historyList");
+    const container = document.getElementById("historyList");
     if (!this.promptHistory.length) {
-      ul.innerHTML = "<li>No history found.</li>";
+      container.innerHTML = "<li>No history found.</li>";
       return;
     }
-    ul.innerHTML = this.promptHistory
-      .map(l => `<li>[${l.timestamp.slice(0,19)}] ${l.prompt}</li>`)
-      .join("");
+
+    const grouped = this.groupPromptsByDate(this.promptHistory);
+    container.innerHTML = ""; // Clear old content
+
+    Object.entries(grouped).forEach(([date, logs]) => {
+      // Create a collapsible section
+      const details = document.createElement("details");
+      const summary = document.createElement("summary");
+      summary.textContent = `${date} — ${logs.length} prompt${logs.length > 1 ? "s" : ""}`;
+      details.appendChild(summary);
+
+      const ul = document.createElement("ul");
+      logs.forEach(log => {
+        const li = document.createElement("li");
+        li.textContent = log["original prompt"] || log.prompt || "undefined";
+        ul.appendChild(li);
+      });
+
+      details.appendChild(ul);
+      container.appendChild(details);
+    });
   }
+
 
   bindEvents() {
     document.getElementById("simplifyBtn").addEventListener("click", () => {
@@ -88,37 +123,46 @@ class SmartPromptPopup {
     document.getElementById("historyBtn").addEventListener("click", () => {
       this.showHistoryView()
     })
-    // Simplify action
+    // simplify action
     const simplifyActionBtn = document.getElementById("simplifyActionBtn")
     if (simplifyActionBtn) {
       simplifyActionBtn.addEventListener("click", () => {
         this.handleSimplifyAction()
       })
     }
-    // Listen for messages from content script - idk if i need this
+    // listen for messages from content script 
     window.chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       if (message.type === "PROMPT_ANALYZED") {
         this.updatePromptData(message.data)
       }
     })
   }
+  
+  bgRequest(msg) {
+    return new Promise(res =>
+      chrome.runtime.sendMessage(msg, res)
+    );
+  }
 
   async showStatsView() {
     console.log("showStatsView() called");
     this.currentView = "stats";
-    await this.loadPromptHistoryFromServer(); 
     this.setActiveButton("statsBtn")
     this.toggleViews();
-    this.updateStats();     // updates DOM text (#avgLength, #topicList)
-    this.renderCharts();    // draws all Chart.js charts
+    const { rows } = await this.bgRequest({ action:"get_history", limit:100 });
+    this.promptHistory = rows;         
+    this.computePromptData();
+    this.updateStats();     
+    this.renderCharts();    
   }
 
   async showHistoryView() {
     console.log("showHistoryView() called");
     this.currentView = "history";
-    await this.loadPromptHistoryFromServer();
     this.setActiveButton("historyBtn");
     this.toggleViews();
+    const { rows } = await this.bgRequest({ action:"get_history", limit:10 });
+    this.promptHistory = rows;
     this.loadPromptHistoryView();
   }
 
@@ -144,60 +188,34 @@ class SmartPromptPopup {
 
   }
 
-  async loadStoredData() {
-    try {
-      const result = await window.chrome.storage.local.get(["promptData", "promptHistory"])
-      if (result.promptData) {
-        this.promptData = { ...this.promptData, ...result.promptData }
-      }
-      if (result.promptHistory) {
-        this.promptHistory = result.promptHistory
-      }
-      this.updateStats()
-      this.renderCharts();
-    } catch (error) {
-      console.error("Error loading stored data:", error)
-    }
-  }
-
-  async loadPromptHistory() {
-    try {
-      const result = await window.chrome.storage.local.get(["promptHistory"])
-      const history = result.promptHistory || []
-      const historyList = document.getElementById("historyList")
-      if (history.length === 0) {
-        historyList.innerHTML = '<li>No prompt history found.</li>'
-        return
-      }
-      historyList.innerHTML = history.map(item => `<li>${item.prompt || item.Prompt || JSON.stringify(item)}</li>`).join("")
-    } catch (error) {
-      document.getElementById("historyList").innerHTML = '<li>Error loading history.</li>'
-    }
-  }
-
   async handleSimplifyAction() {
     const prompt = document.getElementById("promptInput").value.trim();
     const out    = document.getElementById("simplifiedOutput");
-
+    const copy = document.getElementById("copyBtn")
     if (!prompt) {
       out.textContent = "Please enter a prompt.";
       return;
     }
+    copy.style.display = "none";
+    
 
     out.textContent = "Simplifying…";
-
     chrome.runtime.sendMessage(
       { action: "simplify", prompt },
       (resp) => {
+        
         if (chrome.runtime.lastError) {
           out.textContent = "Extension error: " + chrome.runtime.lastError.message;
           return;
         }
 
         if (resp && resp.success) {
+          console.log("Simplified response: ", resp)
           out.textContent = resp.simplified || "No suggestion returned.";
+          copy.style.display = "inline-block";
         } else {
           out.textContent = "Failed to simplify prompt.";
+          copy.style.display = "none";
         }
       }
     );
@@ -225,42 +243,48 @@ class SmartPromptPopup {
   }
 
   renderCharts() {
-    // your existing Chart.js code, but now reading from this.promptData
-    this.renderPromptTypesChart();
-    this.renderRepetitionChart();
-    this.renderFillerChart();
-    this.renderVerbosityChart();
-  }
+      // existing Chart.js code, but now reading from this.promptData
+      this.renderPromptTonesChart();
+      this.renderRepetitionChart();
+      this.renderFillerChart();
+      this.renderVerbosityChart();
+    }
 
-  renderPromptTypesChart() {
-    const ctx = document.getElementById("promptTypesChart")?.getContext("2d");
-    if (!ctx) return;
-    if (this.charts.promptTypes) this.charts.promptTypes.destroy()
-    this.charts.promptTypes = new Chart(ctx, {
-      type: "doughnut",
-      data: {
-        labels: ["Casual", "Neutral", "Formal"],
-        datasets: [{
-          data: [
-            this.promptData.promptTypes.casual,
-            this.promptData.promptTypes.neutral,
-            this.promptData.promptTypes.formal,
+    renderPromptTonesChart() {
+      console.log("Prompt Tones Data:", this.promptData.promptTones);
+
+      const data = this.promptData.promptTones|| {};
+      const ctx = document.getElementById("promptTonesChart")?.getContext("2d");
+      if (!ctx || Object.keys(data).length === 0) return;
+      if (this.charts.promptTones) this.charts.promptTones.destroy();
+
+      this.charts.promptTones = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+          labels: Object.keys(this.promptData.promptTones),
+          datasets: [
+            {
+              data: Object.values(this.promptData.promptTones || {}),
+              backgroundColor: ["#22c55e", "#6366f1", "#ec4899"],
+              borderWidth: 0,
+            },
           ],
-          backgroundColor: ["#22c55e", "#6366f1", "#ec4899"],
-          borderWidth: 0,
-        }],
-      },
-      options: {
-        cutout: "60%",
-        plugins: { legend: { display: false } },
-        responsive: false,
-        maintainAspectRatio: false,
-      },
-    })
-  }
+        },
+        options: {
+          cutout: "60%",
+          plugins: { legend: { display: false } },
+          responsive: false,
+          maintainAspectRatio: false,
+        },
+      });
+    }
+
 
   renderRepetitionChart() {
-    const ctx = document.getElementById("repetitionChart").getContext("2d")
+    const data = this.promptData.repetitionData || [];
+    const ctx = document.getElementById("repetitionChart")?.getContext("2d");
+    if (!ctx || !data.length === 0) return;
+
     if (this.charts.repetition) this.charts.repetition.destroy()
     this.charts.repetition = new Chart(ctx, {
       type: "line",
@@ -285,8 +309,13 @@ class SmartPromptPopup {
   }
 
   renderVerbosityChart() {
-    const ctx = document.getElementById("verbosityChart").getContext("2d")
-    if (this.charts.verbosity) this.charts.verbosity.destroy()
+    console.log("Verbosity Data:", this.promptData.verbosityData);
+
+    const data = this.promptData.verbosityData || {};
+    const ctx = document.getElementById("verbosityChart")?.getContext("2d");
+    if (!ctx || Object.keys(data).length === 0) return;
+    if (this.charts.verbosity) this.charts.verbosity.destroy();
+
     this.charts.verbosity = new Chart(ctx, {
       type: "bar",
       data: {
@@ -295,9 +324,8 @@ class SmartPromptPopup {
           data: [
             this.promptData.verbosityData.high || 0,
             this.promptData.verbosityData.medium || 0,
-            this.promptData.verbosityData.low || 0
+            this.promptData.verbosityData.low || 0,
           ],
-
           backgroundColor: ["#22c55e", "#a3e635", "#fde047"],
           borderRadius: 6,
         }],
@@ -308,16 +336,20 @@ class SmartPromptPopup {
         responsive: false,
         maintainAspectRatio: false,
       },
-    })
+    });
   }
 
+
   renderFillerChart() {
-    const ctx = document.getElementById("fillerChart").getContext("2d")
-    if (this.charts.filler) this.charts.filler.destroy()
+    const data = this.promptData.fillerData || {};
+    const ctx = document.getElementById("fillerChart")?.getContext("2d");
+    if (!ctx || !data.length === 0) return;
+    if (this.charts.filler) this.charts.filler.destroy();
+
     this.charts.filler = new Chart(ctx, {
       type: "line",
       data: {
-        labels: this.promptData.fillerData.map((_, i) => i + 1),
+        labels: (this.promptData.fillerData || []).map((_, i) => i + 1),
         datasets: [{
           data: this.promptData.fillerData,
           borderColor: "#3b82f6",
@@ -333,8 +365,9 @@ class SmartPromptPopup {
         responsive: false,
         maintainAspectRatio: false,
       },
-    })
+    });
   }
+
 
   updatePromptData(newData) {
     this.promptData = { ...this.promptData, ...newData }
@@ -380,14 +413,9 @@ class SmartPromptPopup {
       console.error("Error saving data:", error)
     }
   }
+
+
   
-  copyToClipboard() {
-    var copyText = document.getElementById("simplifiedOutput");
-    copyText.select();
-    copyText.setSelectionRange(0, 99999); 
-    navigator.clipboard.writeText(copyText.value);
-    alert("Copied the text: " + copyText.value);
-  }
 }
 
 document.addEventListener("DOMContentLoaded", async() => {
