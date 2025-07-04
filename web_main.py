@@ -10,6 +10,10 @@ import os, httpx
 from pathlib import Path
 from dotenv import load_dotenv
 import tiktoken
+from core.topic_extract import load_log, get_top_topics
+
+
+
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -43,7 +47,7 @@ async def analyze_prompt(data: PromptInput):
         "repetition ratio": result["repetition ratio"],
         "filler word density": result["filler word density"],
         "verbosity": result["verbosity"],
-        "timestamp": datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+        "timestamp": datetime.now().strftime("%m-%d-%Y %H:%M:%S")
     }
 
     
@@ -75,9 +79,18 @@ async def get_prompt_log():
         return JSONResponse(status_code=500, content={"error": str(e)})
     
 @app.post("/simplify")
-async def simplify_prompt(data:PromptInput):
+async def simplify_prompt(data: PromptInput):
     try:
         simplified = await simplify(data.prompt)
         return {"simplified_prompt": simplified}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+
+@app.get("/topics")
+async def topics():
+    prompts = load_log(LOG_PATH)
+    topics = get_top_topics(prompts, k=6)
+    print(sorted(topics, key=lambda d: d["count"], reverse=True))
+    return sorted(topics, key=lambda d: d["count"], reverse=True)
+

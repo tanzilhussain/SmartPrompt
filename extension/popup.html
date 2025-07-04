@@ -33,8 +33,11 @@
     <div id="stats-view" class="active">
       <div class="stats-grid">
         <div class="stat-card">
-          <h3>Average Prompt Length</h3>
-          <div id="avgLength" class="big-number"><span class="number">—</span><span class="unit">words</span></div>
+          <div id="floatingStats" class="floating-stats">
+            <span id="avgWords">— avg words</span>
+            <span id="avgPrompts">— prompts/day</span>
+            <span id="mainType">mostly —</span>
+          </div>
         </div>
         <div class="stat-card">
           <h3>Common Topics</h3>
@@ -80,7 +83,7 @@
       <p>Analyzing your prompts...</p>
     </div>
   </div>
-
+  
   <script src="popup.js"></script>
 </body>
 </html>

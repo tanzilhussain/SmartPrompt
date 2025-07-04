@@ -1,8 +1,8 @@
 class SmartPromptPopup {
   constructor() {
    this.currentView = "stats";
-    this.promptData = {};       // will be computed from history
-    this.promptHistory = [];    // full array from server
+    this.promptData = {};       
+    this.promptHistory = [];   
     this.charts = {};
   }
 
@@ -11,7 +11,7 @@ class SmartPromptPopup {
     this.toggleViews()
     const { rows = [] } = await this.bgRequest({ action: "get_history", limit: 100 });
     this.promptHistory = rows;
-    this.computePromptData();
+    await this.computePromptData();
     this.updateStats()
     this.renderCharts()
     document.getElementById("copyBtn").addEventListener("click", () => {
@@ -23,8 +23,8 @@ class SmartPromptPopup {
     });
   }
 
-    // build promptData summary from this.promptHistory
-    computePromptData() {
+  // build promptData summary from this.promptHistory
+  async computePromptData() {
     const logs = this.promptHistory;
 
     const average = arr => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
@@ -37,28 +37,30 @@ class SmartPromptPopup {
       }, {});
     };
 
-    const extractTopics = logs => {
-      const freq = {};
-      logs.forEach(log => {
-        const prompt = log["original prompt"] || log.prompt || "";
-        prompt.toLowerCase().split(/\W+/)
-          .filter(word => word.length > 3)
-          .forEach(word => {
-            freq[word] = (freq[word] || 0) + 1;
-          });
-      });
+  const typeCounts = countBy(logs, "type");
+  console.log("Prompt typeCounts:", typeCounts);
 
-      return Object.entries(freq)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 5)
-        .map(([word, _count]) => word);
-    };
-    
-    const rawVerbosityCounts = countBy(logs, "verbosity");
+  const entries = Object.entries(typeCounts);
+  const mostCommonType = entries.length > 0
+    ? entries.sort((a, b) => b[1] - a[1])[0][0]
+    : "N/A";
+
+  const rawVerbosityCounts = countBy(logs, "verbosity");
+  const topics = await this.fetchTopics();
+
+  const dateCounts = new Set(
+    logs
+      .map(l => l.timestamp)
+      .filter(Boolean)
+      .map(ts => ts.split(" ")[0])
+  );
+  const promptsPerDayCalc =
+    dateCounts.size > 0 ? Math.round(logs.length / dateCounts.size) : 0;
+  
     this.promptData = {
       totalPrompts: logs.length,
       avgLength: Math.round(average(logs.map(l => l["word count"]))),
-      commonTopics: extractTopics(logs),
+      commonTopics: topics,
       promptTones: countBy(logs, "tone") || {},
       repetitionData: logs.map(l => l["repetition ratio"] || 0),
       fillerData: logs.map(l => l["filler word density"] || 0),
@@ -66,7 +68,9 @@ class SmartPromptPopup {
         high: rawVerbosityCounts.high || 0,
         medium: rawVerbosityCounts.medium || 0,
         low: rawVerbosityCounts.low || 0,
-      }
+      },
+      promptsPerDay: promptsPerDayCalc,
+      commonPromptType: mostCommonType,
     };
 
   }
@@ -90,11 +94,27 @@ class SmartPromptPopup {
       return;
     }
 
-    const grouped = this.groupPromptsByDate(this.promptHistory);
-    container.innerHTML = ""; // Clear old content
+    const parseDate = (dateStr) => {
+      // expects DD-MM-YYYY
+      const [month, day, year] = dateStr.split("-").map(Number);
+      return new Date(year, month - 1, day);
+    };
 
-    Object.entries(grouped).forEach(([date, logs]) => {
-      // Create a collapsible section
+    const grouped = this.groupPromptsByDate(this.promptHistory);
+
+    // sort date keys newest to oldest
+    const sortedDates = Object.keys(grouped).sort((a, b) => parseDate(b) - parseDate(a));
+
+    container.innerHTML = "";
+
+    sortedDates.forEach((date) => {
+      // sort prompts in that date group by timestamp (most recent first)
+      const logs = [...grouped[date]].sort((a, b) => {
+        const aTime = new Date(a.timestamp.split(" ").reverse().join(" "));
+        const bTime = new Date(b.timestamp.split(" ").reverse().join(" "));
+        return bTime - aTime;
+      });
+
       const details = document.createElement("details");
       const summary = document.createElement("summary");
       summary.textContent = `${date} — ${logs.length} prompt${logs.length > 1 ? "s" : ""}`;
@@ -151,7 +171,7 @@ class SmartPromptPopup {
     this.toggleViews();
     const { rows } = await this.bgRequest({ action:"get_history", limit:100 });
     this.promptHistory = rows;         
-    this.computePromptData();
+    await this.computePromptData();
     this.updateStats();     
     this.renderCharts();    
   }
@@ -235,12 +255,31 @@ class SmartPromptPopup {
     });
   }
 
+async fetchTopics() {
+  try{
+    const topics = await fetch("http://127.0.0.1:8000/topics");
+    return await topics.json();
+  }
+  catch{
+    return [];
+  }
+  
+}
 
   updateStats() {
-    document.getElementById("avgLength").textContent = this.promptData.avgLength || "—";
+    document.getElementById("avgWords").textContent =
+      `${this.promptData.avgLength || "—"} avg words`;
+  
+    document.getElementById("avgPrompts").textContent =
+      `${this.promptData.promptsPerDay || "—"} prompts/day`;
+    document.getElementById("mainType").textContent =
+      `mostly ${this.promptData.commonPromptType}s` || '—';
+    const topics = this.promptData.commonTopics || [];
     document.getElementById("topicList").innerHTML =
-      (this.promptData.commonTopics || []).map(t=>`<li>• ${t}</li>`).join("");
-  }
+        topics.length
+      ? topics.map(t => `<div> <b> ${t.label.label}</b>: ${t.count} prompts</div>`).join("")
+      : "";
+    }
 
   renderCharts() {
       // existing Chart.js code, but now reading from this.promptData

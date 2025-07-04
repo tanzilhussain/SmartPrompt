@@ -18,11 +18,14 @@ def detect_prompt_type(prompt: str) -> str:
 def detect_prompt_tone(prompt: str) -> str:
     return tone_model.predict([prompt])[0]
 
+
 filler_words = [
     "lol", "omg", "lmao", "lowkey", "ngl", "btw", "just", "maybe", "sort of", "kind of", "basically", "actually", "literally",
     "umm", "uh", "you know", "like", "i mean", "well", "sooo", "okay so", "pls", "please", "can you", "could you", "would you", 
-    "i’d be grateful if you could", "i was wondering if", "it would be great if", "would it be possible to", "do you mind", "super", "really", "very", "totally", "absolutely"
+    "i’d be grateful if you could", "i was wondering if", "it would be great if", "would it be possible to", "do you mind", 
+    "super", "really", "very", "totally", "absolutely"
 ]
+
 vague_words = {
     "do": ["complete","summarize", "execute"],
     "get": ["find", "retrieve", "identify"],
@@ -39,14 +42,20 @@ def analyze_prompt_verbosity(prompt: str) -> dict:
     if prompt.find("you said:\\n") != 1:
         prompt.strip("you said:\\n")
     word_list = prompt.split()
+    filler_word_count = 0
+    for phrase in filler_words:
+        pattern = re.escape(phrase)
+        matches = re.findall(r'\b' + pattern + r'\b', prompt)
+        filler_word_count += len(matches)
+
+    word_list = re.findall(r'\b\w+\b', prompt)
     word_count = len(word_list)
     total_letters = 0
-    filler_word_count = 0
     repeat_count = 0
     verbosity_level = ""
     for w in word_list:
         total_letters += len(w)
-        if w in filler_words:
+        if w.lower() in filler_words:
             filler_word_count += 1
 
     counts = Counter(word_list)
@@ -62,9 +71,9 @@ def analyze_prompt_verbosity(prompt: str) -> dict:
         repetition_ratio = round(repeat_count/word_count, 2)
         filler_word_density = round(filler_word_count/word_count, 2)
     
-    if filler_word_density >= 0.66 or repetition_ratio >= 0.66:
+    if word_count>20 and (filler_word_density >= 0.3 or repetition_ratio >= 0.20):
         verbosity_level = "high"
-    elif filler_word_density >= .33 or repetition_ratio >= 0.33:
+    elif word_count>10 and (filler_word_density >= .15 or repetition_ratio >= 0.15):
         verbosity_level = "medium"
     else:
         verbosity_level = "low"
@@ -98,7 +107,7 @@ async def simplify(user_input: str):
             body = {
                 "contents": [
                     {"parts": [
-                        {"text": "Simplify this prompt to be clearer and more concise: " + new_prompt}
+                        {"text": "Simplify this prompt to be clearer and more concise to an LLM: " + new_prompt}
                     ]}
                 ]
             }

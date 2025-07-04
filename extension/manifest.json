@@ -6,7 +6,7 @@
     "background": {
         "service_worker": "background.js"
     },
-    "permissions": ["storage","scripting", "activeTab", "clipboardWrite"],
+    "permissions": ["storage","tabs", "scripting", "activeTab", "clipboardWrite"],
     "host_permissions": ["http://127.0.0.1:8000/", "https://chatgpt.com/*", "https://chat.openai.com/*"],
     "web_accessible_resources": [
         {

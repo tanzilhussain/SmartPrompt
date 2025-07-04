@@ -7,7 +7,7 @@
 html, body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   width: 400px;
-  height: 520px;
+  height: 540px;
   overflow-y: auto;
   background: #f4f6fa;
   color: #222;
@@ -152,6 +152,23 @@ html, body {
   font-weight: 700;
   margin-bottom: 4px;
   color: #6366f1;
+}
+
+.floating-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  margin-top: 12px;
+  justify-content: center;
+}
+
+.floating-stats span {
+  background-color: #f3f4f6;
+  padding: 6px 10px;
+  border-radius: 8px;
 }
 
 .topic-list {
