@@ -1,7 +1,7 @@
 # function to process the core funcs
 from core.prompt import Prompt
 from core.logger import log_prompt
-from core.analyzer import detect_prompt_type, detect_prompt_tone, simplify, analyze_prompt_verbosity
+from core.analyzer import detect_prompt_type, detect_prompt_tone, analyze_prompt_verbosity
 
 def process_prompt(user_prompt: str) -> dict:
     my_prompt = Prompt(user_prompt)

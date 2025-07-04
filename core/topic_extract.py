@@ -16,20 +16,6 @@ STOPWORDS = set(stopwords.words("english"))
 DEFAULT_K = 6
 LOG_PATH = Path.home() / ".smartprompt" / "prompt_log.jsonl"
 
-# grab log
-def load_log(log_path: Path) -> list[str]:
-    prompts: list[str] = []
-    if log_path.exists():
-        with log_path.open() as fh:
-            for line in fh:
-                line = line.strip()
-                if not line:
-                    continue
-                data = json.loads(line)
-                text = data.get("original prompt") or data.get("prompt")
-                if text:
-                    prompts.append(text.lower())
-    return prompts
 
 # remove punctuation and extra spaces from prompt
 def clean_prompt(p):
@@ -38,6 +24,22 @@ def clean_prompt(p):
     p = re.sub(r"[^a-z\s]", "", p)         
     p = re.sub(r"\s+", " ", p).strip()  
     return " ".join([w for w in p.split() if w not in STOPWORDS])
+
+# grab log
+def load_log(log_path: Path, num_lines: int=75) -> list[str]:
+    prompts: list[str] = []
+    if log_path.exists():
+        with log_path.open() as fh:
+            lines = fh.readlines()[-num_lines:]
+            for line in lines:
+                line = line.strip()
+                if not line:
+                    continue
+                data = json.loads(line)
+                text = data.get("original prompt") or data.get("prompt")
+                if text:
+                    prompts.append(clean_prompt(text.lower()))
+    return prompts
 
 # embedding logic
 def embed_prompts(prompts: list[str]) -> np.ndarray:
@@ -94,36 +96,38 @@ def get_top_topics(prompts: list[str], k: int = DEFAULT_K) -> list[dict]:
 
 
 
-# if __name__ == "__main__":
-#     """
-#     Quick CLI test:
-#       $ python topics.py                # uses default log path, k=6
-#       $ python topics.py -p ./mylog.jsonl -k 8
-#     """
-#     import argparse, sys
-#     from pathlib import Path
+if __name__ == "__main__":
+    """
+    Quick CLI test:
+      $ python topics.py                # uses default log path, k=6
+      $ python topics.py -p ./mylog.jsonl -k 8
+    """
+    import argparse, sys
+    from pathlib import Path
 
-#     parser = argparse.ArgumentParser(
-#         description="Cluster prompt log and print the top topics."
-#     )
-#     parser.add_argument(
-#         "-p", "--path",
-#         type=Path,
-#         default=LOG_PATH,
-#         help="Path to prompt_log.jsonl (default: ~/.smartprompt/prompt_log.jsonl)"
-#     )
-#     parser.add_argument(
-#         "-k", "--clusters",
-#         type=int,
-#         default=DEFAULT_K,
-#         help=f"Number of clusters (default: {DEFAULT_K})"
-#     )
-#     args = parser.parse_args()
+    parser = argparse.ArgumentParser(
+        description="Cluster prompt log and print the top topics."
+    )
+    parser.add_argument(
+        "-p", "--path",
+        type=Path,
+        default=LOG_PATH,
+        help="Path to prompt_log.jsonl (default: ~/.smartprompt/prompt_log.jsonl)"
+    )
+    parser.add_argument(
+        "-k", "--clusters",
+        type=int,
+        default=DEFAULT_K,
+        help=f"Number of clusters (default: {DEFAULT_K})"
+    )
+    args = parser.parse_args()
 
 
-#     prompts = load_log(args.path)
-#     if not prompts:
-#         sys.exit(f"No prompts found in {args.path}")
+    prompts = load_log(args.path)
+    if not prompts:
+        sys.exit(f"No prompts found in {args.path}")
+    topics = get_top_topics(prompts, k=6)
+    print(sorted(topics, key=lambda d: d["count"], reverse=True))
 
 
 
