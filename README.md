@@ -25,16 +25,16 @@ SmartPrompt is a Chrome extension that gives users insights into their ChatGPT p
 - **AI/NLP:** sentence-transformers, KeyBERT
 - **Storage:** chrome.storage.local, JSONL prompt logs
 
----
+````
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Clone the repo
 
 ```bash
 git clone https://github.com/yourusername/smartprompt.git
 cd smartprompt
-````
+```
 
 ### 2. Set up the backend
 
