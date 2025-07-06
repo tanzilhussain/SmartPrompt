@@ -87,46 +87,48 @@ async def simplify(user_input: str):
     encoding = tiktoken.get_encoding("cl100k_base")
     token_count = len(encoding.encode(new_prompt))
     filler_word_count = 0
+
     for word in filler_words:
         if new_prompt.find(word) != -1:
             filler_word_count += 1
             new_prompt = re.sub(word, "", new_prompt)
+
     for word in vague_words:
         if new_prompt.find(word) != -1:
             re.sub(word, vague_words[word][0], new_prompt)
     new_prompt = re.sub("  ", " ", new_prompt)
+    new_prompt = re.sub(" , ", " ", new_prompt)
 
     # gemini clean
-    if token_count > 25:
-        verbosity_dict = analyze_prompt_verbosity(new_prompt)
-        while new_prompt.strip().lower() == user_input.strip().lower() or verbosity_dict["verbosity level"] == "high":
-            headers = {
-                "Content-Type": "application/json",
-                "x-goog-api-key": GEMINI_API_KEY,
-            }
-            body = {
-                "contents": [
-                    {"parts": [
-                        {"text": "Simplify this prompt to be clearer and more concise to an LLM: " + new_prompt}
-                    ]}
-                ]
-            }
-            try: 
-                async with httpx.AsyncClient() as client:
-                    response = await client.post(
-                        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",
-                        headers=headers,
-                        json=body
-                    )
-                response.raise_for_status()
-                output = response.json()
-                new_prompt = output["candidates"][0]["content"]["parts"][0]["text"].strip()
-                verbosity_dict = analyze_prompt_verbosity(new_prompt)
-                return new_prompt
-            except Exception as e:
-                print("Gemini error", e)
-                verbosity_dict = analyze_prompt_verbosity(new_prompt)
-                return new_prompt
+    verbosity_dict = analyze_prompt_verbosity(new_prompt)
+    while new_prompt.strip().lower() == user_input.strip().lower() or verbosity_dict["verbosity level"] == "high" or verbosity_dict["verbosity level"] == "medium" or token_count >= 30:
+        headers = {
+            "Content-Type": "application/json",
+            "x-goog-api-key": GEMINI_API_KEY,
+        }
+        body = {
+            "contents": [
+                {"parts": [
+                    {"text": "Simplify this prompt to be clearer and more concise to an LLM, reducing token count while retaining semantic meaning and increasing efficiency: " + new_prompt}
+                ]}
+            ]
+        }
+        try: 
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",
+                    headers=headers,
+                    json=body
+                )
+            response.raise_for_status()
+            output = response.json()
+            new_prompt = output["candidates"][0]["content"]["parts"][0]["text"].strip()
+            verbosity_dict = analyze_prompt_verbosity(new_prompt)
+            return new_prompt
+        except Exception as e:
+            print("Gemini error", e)
+            verbosity_dict = analyze_prompt_verbosity(new_prompt)
+            return new_prompt
     return new_prompt
         
 # import asyncio
@@ -135,3 +137,13 @@ async def simplify(user_input: str):
 #     # Example usage
 #     prompt = "Can you please summarize the project details and find the key concepts?"
 #     simplified = asyncio.run(simplify(prompt))
+
+
+# test_prompts = [
+#     "Hi there! I was just wondering if you could maybe help me out by giving a super quick but detailed explanation of how neural networks basically work in terms of inputs, weights, layers, and like, backpropagation and stuff? I’d be super grateful!",
+#     "So like, I’m trying to get some ideas for a project related to AI, and I kind of want to focus on something that's sort of ethical but also useful, maybe in healthcare or education, but I'm not really sure what direction to go in. Can you help me brainstorm some stuff?",
+#     "Please write me a list of the top ten most important key benefits of practicing mindfulness on a daily basis that includes both mental health and physical well-being. Try to explain the reasons clearly and simply, and if possible, make it easy to understand for someone who’s never practiced mindfulness before.",
+#     "Can you do me a favor and go over the main points of the article I pasted earlier and find the important things that are kind of worth paying attention to? I want to get a sense of what it's really saying, you know? Like the essential ideas and stuff. Thanks!",
+#     "I was wondering if it would be at all possible for you to kind of walk me through the steps involved in deploying a basic web app on Heroku, or any other similar platform, because I think I might need to do something like that soon but I’m not totally sure how the process works from start to finish.",
+#     "Hey! So I’ve been trying to wrap my head around how transformers actually work in large language models, and I kind of get the whole attention is all you need thing, but also like, could you maybe explain the attention mechanism again in a way that’s not super math-heavy but still makes sense for someone who’s like semi-technical? Appreciate it!"
+# ]

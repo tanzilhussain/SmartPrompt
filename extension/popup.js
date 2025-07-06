@@ -313,7 +313,7 @@ async fetchTopics() {
         options: {
           cutout: "60%",
           plugins: { legend: { display: false } },
-          responsive: false,
+          responsive: true,
           maintainAspectRatio: true,
         },
       });

@@ -23,7 +23,7 @@ SmartPrompt is a Chrome extension that gives users insights into their ChatGPT p
 
 - **Frontend:** JavaScript, HTML/CSS, Chart.js
 - **Backend:** Python (FastAPI)
-- **AI/NLP:** sentence-transformers, KeyBERT
+- **AI/NLP:** sentence-transformers, KeyBERT, spaCy
 - **Storage:** chrome.storage.local, JSONL prompt logs
 
 ````
