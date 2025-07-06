@@ -11,7 +11,8 @@ SmartPrompt is a Chrome extension that gives users insights into their ChatGPT p
 ## ✨ Features
 
 - 📊 **Prompt Stats Dashboard** – Visualize average prompt length, tone, verbosity, and repetition trends.
-- 🔍 **Topic Clustering with AI** – Uses sentence-transformers and KeyBERT to identify your most frequent prompt themes.
+- 🔍 **Topic Clustering with AI** – Groups your prompts into semantic clusters using sentence-transformers and auto-labels them with relevant keywords using KeyBERT.
+- 🚫 **Duplicate-Free Labels** – Ensures clean, non-repeating topic tags across clusters.
 - 📅 **Prompt History View** – Explore a chronological log of your past prompts, grouped by day.
 - ✂️ **Prompt Simplifier** – Simplify verbose or cluttered prompts with one click.
 - 🔌 **Local-First Design** – All data is stored locally; no external data sharing.

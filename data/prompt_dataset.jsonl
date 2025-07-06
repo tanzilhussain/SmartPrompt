@@ -35,3 +35,32 @@
 {"prompt": "Water freezes at 0°C", "type": "statement"}
 {"prompt": "Share some career advice for students", "type": "command"}
 {"prompt": "The sun is a star", "type": "statement"}
+{"prompt": "What is the speed of light?", "type": "question"}
+{"prompt": "Is Pluto considered a planet?", "type": "question"}
+{"prompt": "How do plants perform photosynthesis?", "type": "question"}
+{"prompt": "Could you explain string theory?", "type": "question"}
+{"prompt": "Tell me the history of the Eiffel Tower", "type": "command"}
+{"prompt": "Write a poem about autumn", "type": "command"}
+{"prompt": "Generate a workout plan for beginners", "type": "command"}
+{"prompt": "Calculate the area of a circle with radius 5", "type": "command"}
+{"prompt": "Bananas are rich in potassium", "type": "statement"}
+{"prompt": "Mars is known as the Red Planet", "type": "statement"}
+{"prompt": "Provide tips for time management", "type": "command"}
+{"prompt": "How do vaccines work?", "type": "question"}
+{"prompt": "Is it possible to time travel?", "type": "question"}
+{"prompt": "Gravity pulls objects toward Earth", "type": "statement"}
+{"prompt": "Generate a haiku about the moon", "type": "command"}
+{"prompt": "Who discovered electricity?", "type": "question"}
+{"prompt": "What's the difference between RAM and ROM?", "type": "question"}
+{"prompt": "Write a short story about a lost puppy", "type": "command"}
+{"prompt": "The human heart has four chambers", "type": "statement"}
+{"prompt": "Describe the Great Wall of China", "type": "command"}
+{"prompt": "Why do we dream?", "type": "question"}
+{"prompt": "Can you define artificial intelligence?", "type": "question"}
+{"prompt": "Please outline the steps to change a tire", "type": "command"}
+{"prompt": "Suggest a few books for personal growth", "type": "command"}
+{"prompt": "Zebras have black and white stripes", "type": "statement"}
+{"prompt": "Create a budget plan for college students", "type": "command"}
+{"prompt": "The Amazon rainforest produces 20% of Earth's oxygen", "type": "statement"}
+{"prompt": "Do penguins live at the North Pole?", "type": "question"}
+{"prompt": "Write a Python script to sort a list", "type": "command"}

@@ -90,7 +90,7 @@ async def simplify_prompt(data: PromptInput):
 @app.get("/topics")
 async def topics():
     prompts = load_log(LOG_PATH)
-    topics = get_top_topics(prompts, k=6)
+    topics = get_top_topics(prompts)
     print(sorted(topics, key=lambda d: d["count"], reverse=True))
     return sorted(topics, key=lambda d: d["count"], reverse=True)
 

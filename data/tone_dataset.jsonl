@@ -20,11 +20,11 @@
 {"prompt": "wait what does this even mean 😭", "tone": "casual"}
 {"prompt": "lmao okay but why does this matter", "tone": "casual"}
 
-{"prompt": "please help me understand this", "tone": "formal"}
-{"prompt": "would you kindly elaborate on that?", "tone": "formal"}
-{"prompt": "if you don’t mind, could you clarify?", "tone": "formal"}
-{"prompt": "i respectfully disagree, can you explain further?", "tone": "formal"}
-{"prompt": "may I ask for a brief explanation?", "tone": "formal"}
+{"prompt": "please help me understand this", "tone": "polite"}
+{"prompt": "would you kindly elaborate on that?", "tone": "polite"}
+{"prompt": "if you don’t mind, could you clarify?", "tone": "polite"}
+{"prompt": "i respectfully disagree, can you explain further?", "tone": "polite"}
+{"prompt": "may I ask for a brief explanation?", "tone": "polite"}
 
 {"prompt": "generate a list of pros and cons", "tone": "neutral"}
 {"prompt": "describe the function of DNA", "tone": "neutral"}

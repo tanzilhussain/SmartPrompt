@@ -25,7 +25,8 @@ class SmartPromptPopup {
 
   // build promptData summary from this.promptHistory
   async computePromptData() {
-    const logs = this.promptHistory;
+    const allLogs = this.promptHistory;
+    const logs = allLogs.slice(-75);
 
     const average = arr => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
 
@@ -256,7 +257,7 @@ class SmartPromptPopup {
   }
 
 async fetchTopics() {
-  try{
+  try {
     const topics = await fetch("http://127.0.0.1:8000/topics");
     return await topics.json();
   }
@@ -277,7 +278,7 @@ async fetchTopics() {
     const topics = this.promptData.commonTopics || [];
     document.getElementById("topicList").innerHTML =
         topics.length
-      ? topics.map(t => `<div> <b> ${t.label.label}</b>: ${t.count} prompts</div>`).join("")
+      ? topics.map(t => `<div> <b> ${t.label}</b>: ${t.count} prompts</div>`).join("")
       : "";
     }
 
@@ -313,7 +314,7 @@ async fetchTopics() {
           cutout: "60%",
           plugins: { legend: { display: false } },
           responsive: false,
-          maintainAspectRatio: false,
+          maintainAspectRatio: true,
         },
       });
     }
@@ -341,7 +342,7 @@ async fetchTopics() {
       options: {
         plugins: { legend: { display: false } },
         scales: { x: { display: false }, y: { display: false } },
-        responsive: false,
+        responsive: true,
         maintainAspectRatio: false,
       },
     })
@@ -372,7 +373,7 @@ async fetchTopics() {
       options: {
         plugins: { legend: { display: false } },
         scales: { x: { display: false }, y: { display: false } },
-        responsive: false,
+        responsive: true,
         maintainAspectRatio: false,
       },
     });
@@ -401,7 +402,7 @@ async fetchTopics() {
       options: {
         plugins: { legend: { display: false } },
         scales: { x: { display: false }, y: { display: false } },
-        responsive: false,
+        responsive: true,
         maintainAspectRatio: false,
       },
     });
