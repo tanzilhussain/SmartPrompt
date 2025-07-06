@@ -99,7 +99,7 @@ async def simplify(user_input: str):
     # gemini clean
     if token_count > 25:
         verbosity_dict = analyze_prompt_verbosity(new_prompt)
-        while new_prompt.prompt.strip().lower() == user_input.strip().lower() or verbosity_dict["verbosity level"] == "high":
+        while new_prompt.strip().lower() == user_input.strip().lower() or verbosity_dict["verbosity level"] == "high":
             headers = {
                 "Content-Type": "application/json",
                 "x-goog-api-key": GEMINI_API_KEY,

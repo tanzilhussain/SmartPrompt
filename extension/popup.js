@@ -214,7 +214,7 @@ class SmartPromptPopup {
     const out    = document.getElementById("simplifiedOutput");
     const copy = document.getElementById("copyBtn")
     if (!prompt) {
-      out.textContent = "Please enter a prompt.";
+      out.textContent = "Please enter a prompt...";
       return;
     }
     copy.style.display = "none";
