@@ -1,7 +1,5 @@
 
 ---
-
-````markdown
 # 🧠 SmartPrompt – Your AI Prompt Analyzer
 
 SmartPrompt is a Chrome extension that gives users insights into their ChatGPT prompt behavior. It tracks prompt history, analyzes tone, verbosity, and repetition, and clusters your most common prompt topics using AI.
@@ -26,7 +24,7 @@ SmartPrompt is a Chrome extension that gives users insights into their ChatGPT p
 - AI/NLP: sentence-transformers, KeyBERT, spaCy
 - Storage: chrome.storage.local, JSONL prompt logs
 
-````
+---
 
 ## Getting Started
 
@@ -68,4 +66,3 @@ Built by **Tanzil Hussain**, a USC student studying Artificial Intelligence for 
 Connect at [tanzilhussain.com](https://tanzilhussain.com) or [LinkedIn](https://linkedin.com/in/tanzilhussain).
 
 
-```
